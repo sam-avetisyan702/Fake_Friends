@@ -701,3 +701,4 @@ class FriendsBot:
         @self.bot.on_message(filters.command("ask"))
         async def ask_cmd(client, message):
            if not self:
+             pass

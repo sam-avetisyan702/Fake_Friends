@@ -3,9 +3,9 @@
 
 """
 ===========================================================
-   🛡️  FRIENDS_BOT - ULTIMATE EDITION
-   🔰  BAN-PROOF + AUTO-JOIN + FOLLOW + BROADCAST
-   📌  Version 4.0 (ALL-IN-ONE)
+   🌟  FRIENDS_BOT - PROFESSIONAL EDITION
+   🔰  ULTIMATE UI + REAL USERS + 24/7
+   📌  Version 5.0 (BLUE + PURPLE THEME)
 ===========================================================
 """
 
@@ -21,7 +21,7 @@ import sqlite3
 from datetime import datetime, timedelta
 from collections import defaultdict
 from pyrogram import Client, filters, enums
-from pyrogram.types import Message, Chat, User
+from pyrogram.types import Message, Chat, User, InlineKeyboardMarkup, InlineKeyboardButton
 from pyrogram.errors import FloodWait, UserIsBlocked, PeerIdInvalid
 
 # ================================================================
@@ -35,16 +35,15 @@ if sys.version_info >= (3, 14):
         asyncio.set_event_loop(asyncio.new_event_loop())
 
 # ================================================================
-# 2. COLORS
+# 2. PROFESSIONAL COLORS (BLUE + PURPLE)
 # ================================================================
 class Colors:
-    HEADER = '\033[95m'
     BLUE = '\033[94m'
+    PURPLE = '\033[95m'
     CYAN = '\033[96m'
     GREEN = '\033[92m'
     YELLOW = '\033[93m'
     RED = '\033[91m'
-    MAGENTA = '\033[35m'
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
     END = '\033[0m'
@@ -65,33 +64,107 @@ if not os.path.exists(CACHE_FOLDER):
 os.chdir(CACHE_FOLDER)
 
 # ================================================================
-# 4. USER GENERATOR
+# 4. USER GENERATOR (REALISTIC)
 # ================================================================
+REAL_NAMES = [
+    "Aram", "Armen", "Garik", "David", "Edgar", "Zaven", "Torgom",
+    "Levon", "Khoren", "Hakob", "Mher", "Narek", "Samvel", "Vahe",
+    "Ani", "Lusine", "Nina", "Mariam", "Anush", "Sona", "Lilit"
+]
+
+LAST_NAMES = [
+    "Sargsyan", "Hovhannisyan", "Ghazaryan", "Khachatryan", "Mkrtchyan",
+    "Harutyunyan", "Grigoryan", "Petrosyan", "Avetisyan", "Manukyan"
+]
+
+def generate_real_users(count=MAX_USERS):
+    """Ստեղծում է իրական անուններով օգտատերեր"""
+    users = set()
+    while len(users) < count:
+        first = random.choice(REAL_NAMES)
+        last = random.choice(LAST_NAMES)
+        year = random.randint(1980, 2005)
+        users.add(f"{first}{last}{year}")
+    return list(users)
+
 def create_users():
     if not os.path.exists("users.txt"):
-        print("👥 Ստեղծում եմ 1000 օգտատեր...")
-        with open("users.txt", "w") as f:
-            for i in range(MAX_USERS):
-                f.write(f"@user{i+1}\n")
+        print("👥 Ստեղծում եմ 1000 իրական օգտատեր...")
+        users = generate_real_users(MAX_USERS)
+        with open("users.txt", "w", encoding='utf-8') as f:
+            for user in users:
+                f.write(f"@{user}\n")
         print(f"✅ users.txt ստեղծված է ({MAX_USERS} օգտատեր)")
     else:
         print("✅ users.txt արդեն կա")
 
 # ================================================================
-# 5. TELEGRAM API (SIMPLE)
+# 5. PROFESSIONAL UI
 # ================================================================
-def send_message_simple(chat_id, text):
-    import requests
-    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-    data = {"chat_id": chat_id, "text": text}
-    try:
-        requests.post(url, data=data, timeout=10)
-        return True
-    except:
-        return False
+class UI:
+    @staticmethod
+    def banner():
+        os.system('cls' if platform.system() == "Windows" else 'clear')
+        print(f"""
+{Colors.PURPLE}{Colors.BOLD}╔══════════════════════════════════════════════════════════════════╗
+║                                                                  ║
+║   🌟  {Colors.BLUE}FRIENDS_BOT - PROFESSIONAL EDITION{Colors.PURPLE}                 ║
+║   🔰  {Colors.CYAN}ULTIMATE UI + REAL USERS + 24/7{Colors.PURPLE}                  ║
+║   📌  {Colors.BLUE}Version 5.0 (BLUE + PURPLE){Colors.PURPLE}                       ║
+║                                                                  ║
+╚══════════════════════════════════════════════════════════════════╝{Colors.END}
+""")
+    
+    @staticmethod
+    def menu():
+        print(f"""
+{Colors.BLUE}╔══════════════════════════════════════════════════════════════════╗
+║ {Colors.BOLD}📌  ՀԻՄՆԱԿԱՆ ՄԵՆՈՒ{Colors.BLUE}                                         ║
+╠══════════════════════════════════════════════════════════════════╣
+║                                                                  ║
+║  {Colors.PURPLE}▶  {Colors.CYAN}1. ՍՏԵՂԾԵԼ ԿԵՂԾ ԱԿԿԱՈՒՆՏՆԵՐ{Colors.BLUE}                  ║
+║  {Colors.PURPLE}▶  {Colors.CYAN}2. ԶԱՆԳՎԱԾԱՅԻՆ ՈՒՂԱՐԿՈՒՄ{Colors.BLUE}                  ║
+║  {Colors.PURPLE}▶  {Colors.CYAN}3. ՀԱՐՑ ՈՒՂԱՐԿԵԼ 10 ՕԳՏԱՏԵՐԻ{Colors.BLUE}              ║
+║  {Colors.PURPLE}▶  {Colors.CYAN}4. ՄԻԱՆԱԼ ԿԱՆԱԼԻՆ{Colors.BLUE}                        ║
+║  {Colors.PURPLE}▶  {Colors.CYAN}5. ՖՈԼՈՎ ԱՆԵԼ{Colors.BLUE}                           ║
+║  {Colors.PURPLE}▶  {Colors.CYAN}6. ՎԻՃԱԿԱԳՐՈՒԹՅՈՒՆ{Colors.BLUE}                       ║
+║  {Colors.PURPLE}▶  {Colors.CYAN}7. ԴԱԴԱՐԵՑՆԵԼ ԱՄԵՆ ԻՆՉ{Colors.BLUE}                   ║
+║  {Colors.PURPLE}▶  {Colors.CYAN}8. ԵԼՔ{Colors.BLUE}                                  ║
+║                                                                  ║
+╚══════════════════════════════════════════════════════════════════╝{Colors.END}
+""")
+    
+    @staticmethod
+    def status_panel(stats):
+        print(f"""
+{Colors.PURPLE}╔══════════════════════════════════════════════════════════════════╗
+║ {Colors.BOLD}📊  ՎԻՃԱԿԱԳՐՈՒԹՅՈՒՆ{Colors.PURPLE}                                       ║
+╠══════════════════════════════════════════════════════════════════╣
+║  👤  {Colors.BLUE}Ակկաունտներ:{Colors.END} {stats.get('accounts', 0):<30}             ║
+║  📨  {Colors.CYAN}Ուղարկված:{Colors.END} {stats.get('sent', 0):<30}                   ║
+║  👥  {Colors.GREEN}Օգտատերեր:{Colors.END} {stats.get('users', 0):<30}                 ║
+║  🛡️  {Colors.PURPLE}Կարգավիճակ:{Colors.END} {stats.get('status', 'ԱՆԽՈՑԵԼԻ'):<30}    ║
+║  ⏱️  {Colors.YELLOW}Աշխատանքի ժամանակը:{Colors.END} {stats.get('uptime', '0:00:00'):<30} ║
+╚══════════════════════════════════════════════════════════════════╝{Colors.END}
+""")
+    
+    @staticmethod
+    def log(message, level="INFO"):
+        icons = {
+            "INFO": f"{Colors.BLUE}ℹ️",
+            "SUCCESS": f"{Colors.GREEN}✅",
+            "WARNING": f"{Colors.YELLOW}⚠️",
+            "ERROR": f"{Colors.RED}❌",
+            "SEND": f"{Colors.CYAN}📤",
+            "RECEIVE": f"{Colors.PURPLE}📥",
+            "CREATE": f"{Colors.GREEN}🛡️",
+            "STOP": f"{Colors.RED}⏹️",
+        }
+        icon = icons.get(level, "•")
+        print(f"{icon} {message}{Colors.END}")
 
 # ================================================================
-# 6. HUMAN CLOCK
+# 6. HUMAN CLOCK & AUTO-ACTIONS (նույնն են, ինչ նախկինում)
 # ================================================================
 class HumanClock:
     @staticmethod
@@ -161,9 +234,6 @@ class DynamicContent:
             emoji=random.choice(emojis)
         )
 
-# ================================================================
-# 7. AUTO-ACTIONS
-# ================================================================
 class AutoActions:
     @staticmethod
     async def join_channel(client, channel_link):
@@ -182,7 +252,7 @@ class AutoActions:
             return False
 
 # ================================================================
-# 8. BAN-PROOF ACCOUNT
+# 7. BAN-PROOF ACCOUNT
 # ================================================================
 class BanProofAccount:
     def __init__(self, phone, proxy=None):
@@ -243,7 +313,7 @@ class BanProofAccount:
         await self._wake_up()
         asyncio.create_task(self._life_cycle())
         self.is_ready = True
-        print(f"🧬 [{self.session_name}] BAN-PROOF ակտիվացված")
+        UI.log(f"[{self.session_name}] BAN-PROOF ակտիվացված", "CREATE")
         return self
         
     async def _wake_up(self):
@@ -294,11 +364,11 @@ class BanProofAccount:
             if task_type == "join":
                 success = await AutoActions.join_channel(self.client, target)
                 msg = f"Միացավ {target}" if success else f"Չհաջողվեց միանալ {target}"
-                print(f"{'✅' if success else '❌'} {msg}")
+                UI.log(msg, "SUCCESS" if success else "ERROR")
             elif task_type == "follow":
                 success = await AutoActions.follow_user(self.client, target)
                 msg = f"Ֆոլով արեց {target}" if success else f"Չհաջողվեց ֆոլով անել {target}"
-                print(f"{'✅' if success else '❌'} {msg}")
+                UI.log(msg, "SUCCESS" if success else "ERROR")
             else:
                 success = False
                 
@@ -368,7 +438,7 @@ class BanProofAccount:
             last = random.choice(last_names)
             try:
                 await self.client.set_profile(first_name=first, last_name=last)
-                print(f"🔄 [{self.session_name}] Փոխեց պրոֆիլը {first} {last}")
+                UI.log(f"[{self.session_name}] Փոխեց պրոֆիլը {first} {last}", "INFO")
             except:
                 pass
                 
@@ -402,6 +472,7 @@ class BanProofAccount:
                 await asyncio.sleep(SmartDelay.thinking())
                 await self.client.send_message(target, text)
                 self._log_interaction(target, None, text)
+                UI.log(f"Ուղարկեց {target}: {text[:30]}...", "SEND")
                 return True
             except:
                 return False
@@ -410,6 +481,7 @@ class BanProofAccount:
                 try:
                     await self.client.send_message(target, text)
                     self._log_interaction(target, None, text)
+                    UI.log(f"Ուղարկեց նոր կոնտակտի {target}", "SEND")
                     return True
                 except:
                     pass
@@ -422,7 +494,7 @@ class BanProofAccount:
             (task_type, target, "pending", int(time.time()))
         )
         self.db.commit()
-        print(f"📋 [{self.session_name}] Ավելացվեց առաջադրանք: {task_type} {target}")
+        UI.log(f"[{self.session_name}] Ավելացվեց առաջադրանք: {task_type} {target}", "INFO")
             
     async def stop(self):
         if self.client:
@@ -430,7 +502,7 @@ class BanProofAccount:
         self.db.close()
 
 # ================================================================
-# 9. SWARM
+# 8. SWARM
 # ================================================================
 class BanProofSwarm:
     def __init__(self):
@@ -440,7 +512,7 @@ class BanProofSwarm:
         self.start_time = time.time()
         
     async def create_accounts(self, count=5):
-        print(f"🛡️ Ստեղծում եմ {count} կեղծ ակկաունտ...")
+        UI.log(f"Ստեղծում եմ {count} կեղծ ակկաունտ...", "CREATE")
         phones = [f"+7999888{str(i).zfill(4)}" for i in range(count)]
         tasks = []
         for i, phone in enumerate(phones):
@@ -449,13 +521,13 @@ class BanProofSwarm:
         self.accounts = await asyncio.gather(*tasks)
         self.running = True
         self.stats["created"] = len(self.accounts)
-        print(f"✅ {len(self.accounts)} BAN-PROOF ակկաունտ ստեղծված")
+        UI.log(f"✅ {len(self.accounts)} BAN-PROOF ակկաունտ ստեղծված", "SUCCESS")
         return self.accounts
         
     async def broadcast(self, text, max_per_account=10):
         if not self.accounts:
             return 0
-        with open("users.txt", "r") as f:
+        with open("users.txt", "r", encoding='utf-8') as f:
             targets = [line.strip() for line in f if line.strip()][:MAX_USERS]
         random.shuffle(targets)
         tasks = []
@@ -466,7 +538,7 @@ class BanProofSwarm:
         results = await asyncio.gather(*tasks)
         sent = sum(1 for r in results if r)
         self.stats["sent"] += sent
-        print(f"📤 Ուղարկված է {sent} հաղորդագրություն")
+        UI.log(f"📤 Ուղարկված է {sent} հաղորդագրություն", "SEND")
         return sent
     
     async def add_task_all(self, task_type, target):
@@ -474,17 +546,31 @@ class BanProofSwarm:
         for account in self.accounts:
             tasks.append(account.add_task(task_type, target))
         await asyncio.gather(*tasks)
-        print(f"📋 {task_type} {target} ավելացվեց բոլոր ակկաունտներին")
+        UI.log(f"📋 {task_type} {target} ավելացվեց բոլոր ակկաունտներին", "INFO")
+        
+    async def get_stats(self):
+        active = len([a for a in self.accounts if a.is_ready])
+        uptime = int(time.time() - self.start_time)
+        hours = uptime // 3600
+        minutes = (uptime % 3600) // 60
+        seconds = uptime % 60
+        return {
+            "accounts": active,
+            "sent": self.stats.get("sent", 0),
+            "users": len(open("users.txt", "r", encoding='utf-8').readlines()),
+            "status": "🟢 ԱՆԽՈՑԵԼԻ" if active > 0 else "🔴 ԱՆԳՈՐԾ",
+            "uptime": f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+        }
         
     async def stop_all(self):
         self.running = False
         tasks = [acc.stop() for acc in self.accounts]
         await asyncio.gather(*tasks)
         self.accounts.clear()
-        print("⏹️ Բոլոր ակկաունտները դադարեցված")
+        UI.log("⏹️ Բոլոր ակկաունտները դադարեցված", "STOP")
 
 # ================================================================
-# 10. TELEGRAM BOT
+# 9. TELEGRAM BOT (PROFESSIONAL UI + MENU)
 # ================================================================
 class FriendsBot:
     def __init__(self, token):
@@ -497,131 +583,121 @@ class FriendsBot:
             in_memory=True
         )
         self.swarm = None
+        self.user_data = {}
         create_users()
+        
+    def get_main_menu(self):
+        return InlineKeyboardMarkup([
+            [InlineKeyboardButton("🛡️ Ստեղծել ակկաունտներ", callback_data="create")],
+            [InlineKeyboardButton("📤 Զանգվածային ուղարկում", callback_data="broadcast")],
+            [InlineKeyboardButton("❓ Հարց ուղարկել 10-ին", callback_data="ask")],
+            [InlineKeyboardButton("🔗 Միանալ կանալին", callback_data="join")],
+            [InlineKeyboardButton("👤 Ֆոլով անել", callback_data="follow")],
+            [InlineKeyboardButton("📊 Վիճակագրություն", callback_data="status")],
+            [InlineKeyboardButton("⏹️ Դադարեցնել", callback_data="stop")],
+        ])
         
     async def start(self):
         @self.bot.on_message(filters.command("start"))
         async def start_cmd(client, message):
             await message.reply(
-                f"🛡️ **FRIENDS_BOT - ULTIMATE EDITION**\n\n"
-                f"🔰 BAN-PROOF + AUTO-JOIN + FOLLOW\n"
-                f"👥 {MAX_USERS} օգտատեր պատրաստ է\n\n"
-                f"📌 **Հրամաններ**\n"
-                f"/create [քանակ] - Ստեղծել կեղծ ակկաունտներ\n"
-                f"/join [link] - Միանալ կանալին\n"
-                f"/follow [user] - Ֆոլով անել\n"
-                f"/broadcast [տեքստ] - Զանգվածային ուղարկում\n"
-                f"/send @user [տեքստ] - Մեկին ուղարկել\n"
-                f"/status - Վիճակագրություն\n"
-                f"/stop - Դադարեցնել"
+                f"{Colors.PURPLE}🌟 **FRIENDS_BOT - PROFESSIONAL EDITION**{Colors.END}\n\n"
+                f"🔰 **BAN-PROOF** + **AUTO-JOIN** + **FOLLOW**\n"
+                f"👥 **{MAX_USERS}** օգտատեր պատրաստ է\n"
+                f"🛡️ 24/7 աշխատում է\n\n"
+                f"📌 **ԸՆՏՐԵՔ ԳՈՐԾՈՂՈՒԹՅՈՒՆԸ** 👇",
+                reply_markup=self.get_main_menu()
             )
             
-        @self.bot.on_message(filters.command("create"))
-        async def create_cmd(client, message):
-            count = int(message.command[1]) if len(message.command) > 1 else 3
-            if not self.swarm:
-                self.swarm = BanProofSwarm()
-            await self.swarm.create_accounts(count)
-            await message.reply(f"✅ {count} BAN-PROOF ակկաունտ ստեղծված")
+        @self.bot.on_callback_query()
+        async def handle_callback(client, callback_query):
+            data = callback_query.data
+            await callback_query.answer()
             
-        @self.bot.on_message(filters.command("status"))
-        async def status_cmd(client, message):
-            if self.swarm and self.swarm.accounts:
-                active = len([a for a in self.swarm.accounts if a.is_ready])
-                await message.reply(
-                    f"📊 **ՎԻՃԱԿԱԳՐՈՒԹՅՈՒՆ**\n"
-                    f"👤 Ակկաունտներ՝ {active}\n"
-                    f"📨 Ուղարկված՝ {self.swarm.stats.get('sent', 0)}\n"
-                    f"👥 Օգտատերեր՝ {MAX_USERS}\n"
-                    f"🛡️ Կարգավիճակ՝ ԱՆԽՈՑԵԼԻ"
+            if data == "create":
+                if not self.swarm:
+                    self.swarm = BanProofSwarm()
+                await self.swarm.create_accounts(3)
+                await callback_query.message.edit_text(
+                    f"✅ **3 BAN-PROOF ակկաունտ ստեղծված!**\n\n"
+                    f"🛡️ Կարող եք օգտագործել /broadcast, /join, /follow",
+                    reply_markup=self.get_main_menu()
                 )
-            else:
-                await message.reply("❌ Չկան ակտիվ ակկաունտներ")
-            
+                
+            elif data == "broadcast":
+                await callback_query.message.edit_text(
+                    "📤 **Զանգվածային ուղարկում**\n\n"
+                    "📌 Ուղարկեք հաղորդագրությունը՝ /broadcast [տեքստ]\n"
+                    f"👥 {MAX_USERS} օգտատեր կստանան",
+                    reply_markup=self.get_main_menu()
+                )
+                
+            elif data == "ask":
+                await callback_query.message.edit_text(
+                    "❓ **Հարց ուղարկել 10 օգտատերերի**\n\n"
+                    "📌 /ask [հարց]",
+                    reply_markup=self.get_main_menu()
+                )
+                
+            elif data == "join":
+                await callback_query.message.edit_text(
+                    "🔗 **Միանալ կանալին**\n\n"
+                    "📌 /join [link]",
+                    reply_markup=self.get_main_menu()
+                )
+                
+            elif data == "follow":
+                await callback_query.message.edit_text(
+                    "👤 **Ֆոլով անել**\n\n"
+                    "📌 /follow [username]",
+                    reply_markup=self.get_main_menu()
+                )
+                
+            elif data == "status":
+                if self.swarm:
+                    stats = await self.swarm.get_stats()
+                    text = (
+                        f"📊 **ՎԻՃԱԿԱԳՐՈՒԹՅՈՒՆ**\n\n"
+                        f"👤 Ակկաունտներ՝ {stats['accounts']}\n"
+                        f"📨 Ուղարկված՝ {stats['sent']}\n"
+                        f"👥 Օգտատերեր՝ {stats['users']}\n"
+                        f"🛡️ Կարգավիճակ՝ {stats['status']}\n"
+                        f"⏱️ Աշխատանքի ժամանակը՝ {stats['uptime']}"
+                    )
+                else:
+                    text = "❌ Չկան ակտիվ ակկաունտներ"
+                await callback_query.message.edit_text(
+                    text,
+                    reply_markup=self.get_main_menu()
+                )
+                
+            elif data == "stop":
+                if self.swarm:
+                    await self.swarm.stop_all()
+                    await callback_query.message.edit_text(
+                        "⏹️ **Բոլորը դադարեցված!**\n\n"
+                        "✅ Ակկաունտներն անջատված են",
+                        reply_markup=self.get_main_menu()
+                    )
+                else:
+                    await callback_query.message.edit_text(
+                        "❌ Չկան ակտիվ ակկաունտներ",
+                        reply_markup=self.get_main_menu()
+                    )
+                    
         @self.bot.on_message(filters.command("broadcast"))
         async def broadcast_cmd(client, message):
             if not self.swarm or not self.swarm.accounts:
-                await message.reply("❗ Նախ /create")
+                await message.reply("❗ **Նախ /create** արեք", reply_markup=self.get_main_menu())
                 return
             if len(message.command) < 2:
-                await message.reply("❗ /broadcast [տեքստ]")
+                await message.reply("❗ /broadcast [տեքստ]", reply_markup=self.get_main_menu())
                 return
             text = ' '.join(message.command[1:])
-            await message.reply(f"🚀 Ուղարկում եմ {MAX_USERS} օգտատերերի...")
+            await message.reply(f"🚀 **Ուղարկում եմ {MAX_USERS} օգտատերերի...**")
             sent = await self.swarm.broadcast(text, max_per_account=10)
-            await message.reply(f"✅ {sent} հաղորդագրություն ուղարկված")
+            await message.reply(f"✅ **{sent} հաղորդագրություն ուղարկված!**", reply_markup=self.get_main_menu())
             
-        @self.bot.on_message(filters.command("send"))
-        async def send_cmd(client, message):
-            if not self.swarm or not self.swarm.accounts:
-                await message.reply("❗ Նախ /create")
-                return
-            parts = message.text.split(' ', 2)
-            if len(parts) < 3:
-                await message.reply("❗ /send @user [տեքստ]")
-                return
-            target = parts[1]
-            text = parts[2]
-            account = random.choice(self.swarm.accounts)
-            success = await account.send_to_target(target, text)
-            if success:
-                await message.reply(f"✅ Ուղարկված է {target}")
-            else:
-                await message.reply("❌ Չհաջողվեց ուղարկել")
-        
-        @self.bot.on_message(filters.command("join"))
-        async def join_cmd(client, message):
-            if not self.swarm or not self.swarm.accounts:
-                await message.reply("❗ Նախ /create")
-                return
-            if len(message.command) < 2:
-                await message.reply("❗ /join [link]")
-                return
-            link = message.command[1]
-            await self.swarm.add_task_all("join", link)
-            await message.reply(f"✅ Բոլոր ակկաունտները կմիանան {link}-ին")
-            
-        @self.bot.on_message(filters.command("follow"))
-        async def follow_cmd(client, message):
-            if not self.swarm or not self.swarm.accounts:
-                await message.reply("❗ Նախ /create")
-                return
-            if len(message.command) < 2:
-                await message.reply("❗ /follow [username]")
-                return
-            username = message.command[1]
-            await self.swarm.add_task_all("follow", username)
-            await message.reply(f"✅ Բոլոր ակկաունտները կֆոլով անեն {username}-ին")
-                
-        @self.bot.on_message(filters.command("stop"))
-        async def stop_cmd(client, message):
-            if self.swarm:
-                await self.swarm.stop_all()
-                await message.reply("⏹️ Բոլորը դադարեցված")
-            else:
-                await message.reply("❌ Չկան ակտիվ ակկաունտներ")
-                
-        print("🤖 FRIENDS_BOT-ը պատրաստ է")
-        await self.bot.start()
-        await asyncio.Event().wait()
-
-# ================================================================
-# 11. MAIN
-# ================================================================
-async def main():
-    print("="*60)
-    print("🛡️  FRIENDS_BOT - ULTIMATE EDITION")
-    print("🔰  BAN-PROOF + AUTO-JOIN + FOLLOW + BROADCAST")
-    print(f"📌  Bot: @{BOT_USERNAME}")
-    print("="*60)
-    print(f"👥 {MAX_USERS} օգտատեր պատրաստ է")
-    print("✅ Համակարգը պատրաստ է!")
-    
-    bot = FriendsBot(BOT_TOKEN)
-    await bot.start()
-
-if __name__ == "__main__":
-    try:
-        asyncio.run(main())
-    except KeyboardInterrupt:
-        print("\n⏹️ Ծրագիրը դադարեցված է")
+        @self.bot.on_message(filters.command("ask"))
+        async def ask_cmd(client, message):
+            if not self

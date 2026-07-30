@@ -1,1 +1,1 @@
-worker: python friends_bot.py
+worker: python marrat-ai.py

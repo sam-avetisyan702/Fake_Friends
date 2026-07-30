@@ -1,1 +1,1 @@
-worker: python marrat-ai.py
+worker: python marat-ai.py

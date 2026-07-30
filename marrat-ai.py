@@ -19,8 +19,8 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Վերցնում ենք բանալիները Environment Variables-ից
-TELEGRAM_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
-GEMINI_KEY = os.environ.get("GEMINI_API_KEY")
+TELEGRAM_TOKEN = os.environ.get("8766725521:AAE2fEB8-2nu05ON026ILLV3-avcEp1q2fc")
+GEMINI_KEY = os.environ.get("AQ.Ab8RN6JyJ534KX4FUxkhvWsSkS_r6SE3UAMZJ5tC9JBNJSYuAw")
 
 # Ստուգում ենք բանալիների առկայությունը
 if not TELEGRAM_TOKEN:

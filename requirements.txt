@@ -1,2 +1,4 @@
-python-telegram-bot
-google-genai
+python-telegram-bot==20.3
+telethon==1.34.0
+aiohttp==3.9.0
+Pillow==10.1.0

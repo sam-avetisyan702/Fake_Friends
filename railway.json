@@ -1,0 +1,12 @@
+{
+  "build": {
+    "builder": "NIXPACKS",
+    "buildCommand": "pip install -r requirements.txt",
+    "nixpacksConfig": {
+      "pythonVersion": "3.12"
+    }
+  },
+  "deploy": {
+    "startCommand": "python friends_bot.py"
+  }
+}

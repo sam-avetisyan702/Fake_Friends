@@ -1,1 +1,1 @@
-worker: python marat-ai.py
+worker: python swag-client.py

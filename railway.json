@@ -3,7 +3,7 @@
     "builder": "NIXPACKS",
     "buildCommand": "pip install -r requirements.txt",
     "nixpacksConfig": {
-      "pythonVersion": "3.12"
+      "pythonVersion": "3.14.6"
     }
   },
   "deploy": {
